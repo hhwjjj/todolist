@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Tauri build artifacts
+src-tauri/target/
+src-tauri/**/*.rs.bk
+
+# Build output
+dist/
+build/
+
+# OS files
+.DS_Store
+
+# Logs
+*.log
