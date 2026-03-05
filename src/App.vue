@@ -230,7 +230,7 @@
                   v-for="tag in tags"
                   :key="tag.id"
                   type="button"
-                  class="w-full flex items-center justify之间 px-2 py-1 rounded-lg hover:bg-white/[0.06] text-xs text-gray-200"
+                  class="w-full flex items-center justify-between px-2 py-1 rounded-lg hover:bg-white/[0.06] text-xs text-gray-200"
                   @click.stop="toggleNewTodoTag(tag.id)"
                 >
                   <div class="flex items-center space-x-2">

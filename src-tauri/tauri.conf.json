@@ -23,7 +23,7 @@
       "minimumSystemVersion": "10.13"
     },
     "shortDescription": "A minimal daily focus & todo tracker",
-    "copyright": "© 2026 YourName. All rights reserved."
+    "copyright": "© 2026 DD-HAHA. All rights reserved."
   },
   "app": {
     "withGlobalTauri": false,
