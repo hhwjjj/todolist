@@ -3,7 +3,7 @@
     <!-- 侧边栏 Sidebar -->
     <aside class="w-64 border-r border-white/5 flex flex-col p-6 space-y-8 bg-[#0B0B0B]">
       <div class="flex items-center space-x-2 px-2">
-        <img src="./assets/logo_rounded.png" alt="FocusLog Logo" class="w-8 h-8 rounded-lg shadow-[0_0_15px_rgba(139,92,246,0.3)] object-cover" />
+        <img src="./assets/logo_simple_padded.png" alt="FocusLog Logo" class="w-8 h-8 rounded-lg shadow-[0_0_15px_rgba(139,92,246,0.3)] object-cover" />
         <span class="font-bold tracking-tight text-white text-lg">FocusLog</span>
       </div>
       
@@ -17,10 +17,7 @@
           <component :is="tab.icon" :size="18" />
           <span class="text-sm">{{ tab.label }}</span>
         </div>
-        <div @click="openSettings" class="flex items-center space-x-3 px-3 py-2 text-gray-500 hover:bg-white/5 hover:text-white rounded-lg transition-all cursor-pointer">
-          <Settings :size="18" />
-          <span class="text-sm">设置</span>
-        </div>
+
       </nav>
 
       <!-- 标签过滤 -->
@@ -76,7 +73,7 @@
       <div class="w-full max-w-2xl px-6">
 
         <!-- ══════ 今日待办 ══════ -->
-        <template v-if="currentView === 'today'">
+        <div v-show="currentView === 'today'">
           <header class="mb-8">
             <h1 class="text-3xl font-semibold text-white mb-2 tracking-tight">Focus.</h1>
             <p class="text-gray-500 text-sm font-light">今天是 {{ todayStr }}</p>
@@ -447,10 +444,10 @@
               </button>
             </div>
           </div>
-        </template>
+        </div>
 
         <!-- ══════ 未来规划 ══════ -->
-        <template v-else-if="currentView === 'upcoming'">
+        <div v-show="currentView === 'upcoming'">
           <header class="mb-12">
             <h1 class="text-3xl font-semibold text-white mb-2 tracking-tight">未来规划</h1>
             <p class="text-gray-500 text-sm font-light">查看已经推迟或预定在未来的任务</p>
@@ -501,10 +498,10 @@
               </div>
             </div>
           </div>
-        </template>
+        </div>
 
         <!-- ══════ 历史回顾 ══════ -->
-        <template v-else-if="currentView === 'history'">
+        <div v-show="currentView === 'history'">
           <header class="mb-12">
             <h1 class="text-3xl font-semibold text-white mb-2 tracking-tight">历史回顾</h1>
             <p class="text-gray-500 text-sm font-light">查看所有已完成的任务</p>
@@ -537,10 +534,10 @@
               </div>
             </div>
           </div>
-        </template>
+        </div>
 
         <!-- ══════ 回顾中心 ══════ -->
-        <template v-else-if="currentView === 'review'">
+        <div v-show="currentView === 'review'">
           <header class="mb-12">
             <h1 class="text-3xl font-semibold text-white mb-2 tracking-tight">回顾中心</h1>
             <p class="text-gray-500 text-sm font-light">选择时间范围，基于任务与日记生成周报 / 月报回顾</p>
@@ -611,10 +608,10 @@
               </button>
             </div>
           </div>
-        </template>
+        </div>
 
         <!-- ══════ 总结存档 ══════ -->
-        <template v-else-if="currentView === 'archive'">
+        <div v-show="currentView === 'archive'">
           <header class="mb-12">
             <h1 class="text-3xl font-semibold text-white mb-2 tracking-tight">总结存档</h1>
             <p class="text-gray-500 text-sm font-light">AI 生成的工作日志存档</p>
@@ -637,10 +634,64 @@
             </div>
             <div class="whitespace-pre-wrap text-sm text-gray-400 font-mono leading-relaxed">{{ arc.content }}</div>
           </div>
-        </template>
+        </div>
       </div>
 
-      <!-- 右下角悬浮按钮 -->
+      <!-- Settings Hub View -->
+      <div v-show="currentView === 'settings'" class="max-w-3xl">
+        <header class="mb-12">
+          <h1 class="text-3xl font-semibold text-white mb-2 tracking-tight">设置</h1>
+          <p class="text-gray-500 text-sm font-light">配置 API 供应商及自定义 AI 提示词</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div
+            @click="isApiSettingsOpen = true"
+            class="group bg-white/[0.02] border border-white/[0.05] rounded-2xl p-6 hover:border-purple-500/30 hover:bg-white/[0.04] transition-all cursor-pointer"
+          >
+            <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition-colors">
+              <KeyRound :size="20" class="text-purple-400" />
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">API 设置</h3>
+            <p class="text-[11px] text-gray-500 leading-relaxed">配置供应商、密钥及模型名称</p>
+          </div>
+
+          <div
+            @click="openDailyPrompt"
+            class="group bg-white/[0.02] border border-white/[0.05] rounded-2xl p-6 hover:border-orange-500/30 hover:bg-white/[0.04] transition-all cursor-pointer"
+          >
+            <div class="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4 group-hover:bg-orange-500/20 transition-colors">
+              <Sparkles :size="20" class="text-orange-400" />
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">AI 日志提示词</h3>
+            <p class="text-[11px] text-gray-500 leading-relaxed">自定义每日总结的系统 Prompt</p>
+          </div>
+
+          <div
+            @click="openReviewPrompt"
+            class="group bg-white/[0.02] border border-white/[0.05] rounded-2xl p-6 hover:border-cyan-500/30 hover:bg-white/[0.04] transition-all cursor-pointer"
+          >
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition-colors">
+              <Archive :size="20" class="text-cyan-400" />
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">AI 归档提示词</h3>
+            <p class="text-[11px] text-gray-500 leading-relaxed">自定义回顾报告的系统 Prompt</p>
+          </div>
+
+          <div
+            @click="isDemoDataModalOpen = true"
+            class="group bg-white/[0.02] border border-white/[0.05] rounded-2xl p-6 hover:border-green-500/30 hover:bg-white/[0.04] transition-all cursor-pointer"
+          >
+            <div class="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center mb-4 group-hover:bg-green-500/20 transition-colors">
+              <LayoutDashboard :size="20" class="text-green-400" />
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1">体验数据</h3>
+            <p class="text-[11px] text-gray-500 leading-relaxed">一键生成示例任务与存档体验完整的应用工作流</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating action button -->
       <button 
         v-if="currentView === 'today'"
         @click="generateSummary"
@@ -677,7 +728,7 @@
             <p class="text-red-400 text-center leading-relaxed">{{ summaryError }}</p>
             <button
               v-if="!apiKey"
-              @click="isSettingsOpen = true; isSummaryOpen = false"
+              @click="currentView = 'settings'; isSummaryOpen = false"
               class="text-purple-400 hover:text-purple-300 underline text-xs"
             >前往设置</button>
           </div>
@@ -705,46 +756,146 @@
       </div>
     </main>
 
-    <!-- Settings Modal -->
+    <!-- API Settings Modal -->
     <div
-      v-if="isSettingsOpen"
+      v-if="isApiSettingsOpen"
       class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center"
-      @click.self="isSettingsOpen = false"
+      @click.self="isApiSettingsOpen = false"
     >
-      <div class="bg-[#1A1A1A] border border-white/10 rounded-2xl p-8 w-[420px] shadow-2xl">
+      <div class="bg-[#1A1A1A] border border-white/10 rounded-2xl p-8 w-[440px] shadow-2xl">
         <h2 class="text-lg font-bold text-white mb-6 flex items-center space-x-2">
           <KeyRound :size="18" class="text-purple-500" />
           <span>API 设置</span>
         </h2>
         <div class="space-y-4">
           <div>
-            <label class="text-xs text-gray-400 mb-2 block">DeepSeek API Key</label>
+            <label class="text-xs text-gray-400 mb-2 block">API 供应商</label>
+            <select
+              v-model="apiProviderInput"
+              @change="onProviderChange"
+              class="w-full bg-[#1F1F1F] border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-purple-500/50 transition-all text-sm"
+            >
+              <option v-for="p in providers" :key="p.id" :value="p.id" class="bg-[#1F1F1F]">{{ p.label }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs text-gray-400 mb-2 block">API 密钥 (API Key)</label>
             <input
               type="password"
               v-model="apiKeyInput"
               placeholder="sk-..."
-              class="w-full bg-white/[0.03] border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/10 transition-all text-sm font-mono"
+              class="w-full bg-white/[0.03] border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/10 transition-all text-sm font-mono"
             />
           </div>
-          <p class="text-[11px] text-gray-600">密钥仅保存在本地 SQLite 数据库中，不会上传至任何服务器。</p>
-
-          <div class="pt-6 border-t border-white/10">
-            <p class="text-xs text-gray-400 mb-2">体验数据（展示用）</p>
-            <p class="text-[11px] text-gray-600 mb-3">生成过去半年的 PM (产品经理) 示例任务与存档，便于查看热力图、历史回顾和导出效果。</p>
-            <button
-              type="button"
-              :disabled="seedDemoLoading"
-              @click="seedDemoData"
-              class="w-full px-4 py-2.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white"
-            >
-              {{ seedDemoLoading ? '生成中…' : '生成半年 PM 示例数据' }}
-            </button>
-            <p v-if="seedDemoMessage" class="mt-2 text-[11px]" :class="seedDemoMessage.startsWith('已') ? 'text-green-400' : 'text-amber-400'">{{ seedDemoMessage }}</p>
+          <div>
+            <label class="text-xs text-gray-400 mb-2 block">接口地址 (Base URL)</label>
+            <input
+              type="text"
+              v-model="apiBaseUrlInput"
+              placeholder="https://..."
+              class="w-full bg-white/[0.03] border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500/50 transition-all text-sm font-mono"
+            />
           </div>
+          <div>
+            <label class="text-xs text-gray-400 mb-2 block">模型名称 (Model)</label>
+            <input
+              type="text"
+              v-model="apiModelInput"
+              placeholder="deepseek-chat"
+              class="w-full bg-white/[0.03] border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500/50 transition-all text-sm font-mono"
+            />
+          </div>
+          <p class="text-[11px] text-gray-600">密钥仅加密保存在本地 SQLite 数据库中。</p>
         </div>
         <div class="flex justify-end space-x-3 mt-8">
-          <button @click="isSettingsOpen = false" class="px-5 py-2.5 text-gray-400 hover:text-white text-sm transition-colors">取消</button>
-          <button @click="saveSettings" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-sm font-medium transition-colors">保存</button>
+          <button @click="isApiSettingsOpen = false" class="px-5 py-2.5 text-gray-400 hover:text-white text-sm transition-colors">取消</button>
+          <button @click="saveApiSettings" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-sm font-medium transition-colors">保存配置</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Demo Data Modal -->
+    <div
+      v-if="isDemoDataModalOpen"
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center"
+      @click.self="isDemoDataModalOpen = false"
+    >
+      <div class="bg-[#1A1A1A] border border-white/10 rounded-2xl p-8 w-[400px] shadow-2xl">
+        <h2 class="text-lg font-bold text-white mb-2 flex items-center space-x-2">
+          <LayoutDashboard :size="18" class="text-green-500" />
+          <span>体验数据</span>
+        </h2>
+        <p class="text-[12px] text-gray-400 mb-6 leading-relaxed">
+          一键生成过去半年的 PM 示例任务与存档。
+        </p>
+        
+        <div class="space-y-4">
+          <button
+            type="button"
+            :disabled="seedDemoLoading"
+            @click="seedDemoData"
+            class="w-full px-4 py-3 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 bg-green-500/10 border border-green-500/30 text-green-400 hover:bg-green-500/20"
+          >
+            {{ seedDemoLoading ? '生成中...' : '生成示例数据' }}
+          </button>
+          <p v-if="seedDemoMessage" class="mt-2 text-[11px] text-center" :class="seedDemoMessage.startsWith('\u5df2') ? 'text-green-400' : 'text-amber-400'">{{ seedDemoMessage }}</p>
+        </div>
+        
+        <div class="flex justify-end mt-6">
+          <button @click="isDemoDataModalOpen = false" class="px-5 py-2.5 text-gray-400 hover:text-white text-sm transition-colors w-full bg-white/5 hover:bg-white/10 rounded-lg">关闭</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Summary Prompt Modal -->
+    <div
+      v-if="isDailyPromptOpen"
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center"
+      @click.self="isDailyPromptOpen = false"
+    >
+      <div class="bg-[#1A1A1A] border border-white/10 rounded-2xl p-8 w-[500px] shadow-2xl">
+        <h2 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+          <Sparkles :size="18" class="text-orange-400" />
+          <span>AI 日志提示词</span>
+        </h2>
+        <p class="text-[12px] text-gray-400 mb-4 leading-relaxed">
+          自定义生成「今日总结」时的系统提示词。留空则使用默认范本。<br>
+          支持占位符：<code class="text-purple-400">{date}</code>, <code class="text-purple-400">{completedCount}</code>, <code class="text-purple-400">{todosText}</code>
+        </p>
+        <textarea
+          v-model="customDailyPromptInput"
+          placeholder="留空以使用预设提示词..."
+          class="w-full min-h-[180px] bg-white/[0.03] border border-white/10 rounded-lg p-4 text-sm text-gray-300 placeholder-gray-600 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/10 transition-all font-mono leading-relaxed resize-y"
+        ></textarea>
+        <div class="flex justify-end space-x-3 mt-6">
+          <button @click="isDailyPromptOpen = false" class="px-5 py-2.5 text-gray-400 hover:text-white text-sm transition-colors">取消</button>
+          <button @click="saveDailyPrompt" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-sm font-medium transition-colors">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Review/Archive Prompt Modal -->
+    <div
+      v-if="isReviewPromptOpen"
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center"
+      @click.self="isReviewPromptOpen = false"
+    >
+      <div class="bg-[#1A1A1A] border border-white/10 rounded-2xl p-8 w-[500px] shadow-2xl">
+        <h2 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+          <Archive :size="18" class="text-cyan-400" />
+          <span>AI 归档提示词</span>
+        </h2>
+        <p class="text-[12px] text-gray-400 mb-4 leading-relaxed">
+          自定义生成「阶段性回顾报告」时的系统提示词。留空则使用默认范本。
+        </p>
+        <textarea
+          v-model="customReviewPromptInput"
+          placeholder="留空以使用预设提示词..."
+          class="w-full min-h-[180px] bg-white/[0.03] border border-white/10 rounded-lg p-4 text-sm text-gray-300 placeholder-gray-600 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/10 transition-all font-mono leading-relaxed resize-y"
+        ></textarea>
+        <div class="flex justify-end space-x-3 mt-6">
+          <button @click="isReviewPromptOpen = false" class="px-5 py-2.5 text-gray-400 hover:text-white text-sm transition-colors">取消</button>
+          <button @click="saveReviewPrompt" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-sm font-medium transition-colors">保存</button>
         </div>
       </div>
     </div>
@@ -868,11 +1019,32 @@ const tabs = [
   { id: 'history', label: '历史回顾', icon: Calendar },
   { id: 'review',  label: '回顾中心', icon: Sparkles },
   { id: 'archive', label: '总结存档', icon: Archive },
+  { id: 'settings', label: '设置', icon: Settings },
 ];
 
 const newTodo = ref('');
 const isSummaryOpen = ref(false);
-const isSettingsOpen = ref(false);
+const isApiSettingsOpen = ref(false);
+const isDailyPromptOpen = ref(false);
+const isReviewPromptOpen = ref(false);
+const isDemoDataModalOpen = ref(false);
+
+const DEFAULT_DAILY_PROMPT_CN = `你是一名严谨的产品助理。请根据提供的已完成任务，生成一份简短、结构简单的 Markdown 格式「产品经理工作日报」。要求：
+1) 仅针对实际任务进行总结，严禁虚构内容；
+2) 重点突出与 AI、大模型、提示词或自动化相关的工作，体现 AI 在实际业务中的应用；
+3) 若任务中不涉及 AI 内容，请勿强行编造；
+4) 语气专业、朴素，避免使用华丽辞藻；
+5) 使用第三人称或中性描述，避免使用“我”；
+6) 以 Markdown 小标题和列表形式组织，每条描述建议在 20 字以内；
+7) 若有多次拖延的任务，请在末尾以幽默的口吻提醒用户，或建议拆解该任务。`;
+
+const DEFAULT_REVIEW_PROMPT_CN = `你是一名严谨的产品助理。请基于提供的任务记录和 Markdown 日志，生成一份阶段性工作回顾报告。要求：
+1) 总结出三个具有代表性的里程碑事件；
+2) 每个里程碑需包含背景、关键动作和可见产出，避免笼统描述；
+3) 基于当前节奏，提供 3-5 条具有可操作性的下一阶段建议，需体现优先级；
+4) 结构要求：阶段概览、三大里程碑、下阶段计划；
+5) 语气专业克制，严禁夸大或虚构。`;
+
 const isTagManagerOpen = ref(false);
 const todos = ref([]);
 const archives = ref([]);
@@ -881,6 +1053,31 @@ const initError = ref('');
 
 const apiKey = ref('');
 const apiKeyInput = ref('');
+const apiProvider = ref('deepseek');
+const apiBaseUrl = ref('https://api.deepseek.com');
+const apiModel = ref('deepseek-chat');
+
+const apiProviderInput = ref('deepseek');
+const apiBaseUrlInput = ref('https://api.deepseek.com');
+const apiModelInput = ref('deepseek-chat');
+
+const customDailyPrompt = ref('');
+const customDailyPromptInput = ref('');
+
+const customReviewPrompt = ref('');
+const customReviewPromptInput = ref('');
+
+const providers = [
+  { id: 'deepseek', label: 'DeepSeek', baseUrl: 'https://api.deepseek.com', defaultModel: 'deepseek-chat' },
+  { id: 'openai', label: 'OpenAI', baseUrl: 'https://api.openai.com/v1', defaultModel: 'gpt-4o' },
+  { id: 'gemini', label: 'Gemini (OpenAI API)', baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai', defaultModel: 'gemini-1.5-pro' },
+  { id: 'zhipu', label: 'Zhipu AI', baseUrl: 'https://open.bigmodel.cn/api/paas/v4', defaultModel: 'glm-4' },
+  { id: 'doubao', label: 'Doubao', baseUrl: 'https://ark.cn-beijing.volces.com/api/v3', defaultModel: 'ep-xxx' },
+  { id: 'qwen', label: 'Qwen', baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1', defaultModel: 'qwen-turbo' },
+  { id: 'siliconflow', label: 'SiliconFlow', baseUrl: 'https://api.siliconflow.cn/v1', defaultModel: 'deepseek-ai/DeepSeek-V3' },
+  { id: 'groq', label: 'Groq', baseUrl: 'https://api.groq.com/openai/v1', defaultModel: 'llama-3.3-70b-versatile' },
+  { id: 'custom', label: 'Custom', baseUrl: '', defaultModel: '' },
+];
 
 const summaryContent = ref('');
 const summaryLoading = ref(false);
@@ -1045,7 +1242,11 @@ const displayedActiveTodos = computed(() => {
 const displayedCompletedTodos = computed(() => {
   const list = filteredCompletedTodos.value;
   const date = heatmapSelectedDate.value;
-  if (!date) return list.filter(t => (t.target_date || t.created_at.slice(0, 10)) <= todayDate);
+  if (!date) return list.filter(t =>
+    (t.updated_at || '').slice(0, 10) === todayDate ||
+    t.target_date === todayDate ||
+    t.created_at.slice(0, 10) === todayDate
+  );
   // 对于过去的日子，更在意“那天完成的”，旧版本先用 created_at 兼容一下
   return list.filter(t => (t.created_at || '').slice(0, 10) === date);
 });
@@ -1132,12 +1333,24 @@ async function initDB() {
       )
     `);
 
-    await db.execute(`
-      CREATE TABLE IF NOT EXISTS settings (
-        key TEXT PRIMARY KEY,
-        value TEXT NOT NULL
-      )
-    `);
+    await db.execute(
+      `CREATE TABLE IF NOT EXISTS settings (
+        id INTEGER PRIMARY KEY DEFAULT 1,
+        api_key TEXT DEFAULT '',
+        api_provider TEXT DEFAULT 'deepseek',
+        api_base_url TEXT DEFAULT 'https://api.deepseek.com',
+        api_model TEXT DEFAULT 'deepseek-chat',
+        custom_daily_prompt TEXT DEFAULT '',
+        custom_review_prompt TEXT DEFAULT ''
+      )`
+    );
+
+    // Schema migrations for older databases
+    try { await db.execute("ALTER TABLE settings ADD COLUMN api_provider TEXT DEFAULT 'deepseek'"); } catch (_) {}
+    try { await db.execute("ALTER TABLE settings ADD COLUMN api_base_url TEXT DEFAULT 'https://api.deepseek.com'"); } catch (_) {}
+    try { await db.execute("ALTER TABLE settings ADD COLUMN api_model TEXT DEFAULT 'deepseek-chat'"); } catch (_) {}
+    try { await db.execute("ALTER TABLE settings ADD COLUMN custom_daily_prompt TEXT DEFAULT ''"); } catch (_) {}
+    try { await db.execute("ALTER TABLE settings ADD COLUMN custom_review_prompt TEXT DEFAULT ''"); } catch (_) {}
 
     await db.execute(`
       CREATE TABLE IF NOT EXISTS archives (
@@ -1191,7 +1404,7 @@ async function initDB() {
     await rolloverTodos();
     await loadTodos();
     await loadTodoTags();
-    await loadApiKey();
+    await loadSettings();
     await loadArchives();
     await loadTags();
     await loadHeatmap();
@@ -1373,28 +1586,114 @@ function clearHeatmapDate() {
 
 // ─── Settings ───────────────────────────────────────────────
 
-async function loadApiKey() {
-  const rows = await db.select("SELECT value FROM settings WHERE key = 'deepseek_api_key'");
-  if (rows.length > 0) {
-    apiKey.value = rows[0].value;
-    apiKeyInput.value = rows[0].value;
+async function loadSettings() {
+  try {
+    const rows = await db.select('SELECT * FROM settings WHERE id = 1');
+    if (rows.length > 0) {
+      const row = rows[0];
+      apiKey.value = row.api_key || '';
+      apiKeyInput.value = apiKey.value;
+      apiProvider.value = row.api_provider || 'deepseek';
+      apiProviderInput.value = apiProvider.value;
+      apiBaseUrl.value = row.api_base_url || 'https://api.deepseek.com';
+      apiBaseUrlInput.value = apiBaseUrl.value;
+      apiModel.value = row.api_model || 'deepseek-chat';
+      apiModelInput.value = apiModel.value;
+      customDailyPrompt.value = row.custom_daily_prompt || '';
+      customDailyPromptInput.value = customDailyPrompt.value || DEFAULT_DAILY_PROMPT_CN;
+      customReviewPrompt.value = row.custom_review_prompt || '';
+      customReviewPromptInput.value = customReviewPrompt.value || DEFAULT_REVIEW_PROMPT_CN;
+      return;
+    }
+  } catch (_) {}
+  // Fallback to old key-value schema
+  try {
+    const rows = await db.select("SELECT key, value FROM settings WHERE key = 'deepseek_api_key'");
+    if (rows.length > 0) {
+      apiKey.value = rows[0].value;
+      apiKeyInput.value = rows[0].value;
+    }
+  } catch (_) {}
+}
+
+function onProviderChange() {
+  const p = providers.find(item => item.id === apiProviderInput.value);
+  if (p) {
+    apiBaseUrlInput.value = p.baseUrl;
+    apiModelInput.value = p.defaultModel;
   }
 }
 
-function openSettings() {
-  apiKeyInput.value = apiKey.value;
-  isSettingsOpen.value = true;
+function openDailyPrompt() {
+  if (!customDailyPromptInput.value.trim()) {
+    customDailyPromptInput.value = DEFAULT_DAILY_PROMPT_CN;
+  }
+  isDailyPromptOpen.value = true;
 }
 
-async function saveSettings() {
+function openReviewPrompt() {
+  if (!customReviewPromptInput.value.trim()) {
+    customReviewPromptInput.value = DEFAULT_REVIEW_PROMPT_CN;
+  }
+  isReviewPromptOpen.value = true;
+}
+
+async function saveApiSettings() {
   if (!db) return;
-  const key = apiKeyInput.value.trim();
-  await db.execute(
-    "INSERT OR REPLACE INTO settings (key, value) VALUES ('deepseek_api_key', ?)",
-    [key]
-  );
-  apiKey.value = key;
-  isSettingsOpen.value = false;
+  try {
+    await db.execute(
+      `INSERT OR REPLACE INTO settings (id, api_key, api_provider, api_base_url, api_model, custom_daily_prompt, custom_review_prompt) VALUES (1, ?, ?, ?, ?, ?, ?)`,
+      [apiKeyInput.value.trim(), apiProviderInput.value, apiBaseUrlInput.value.trim(), apiModelInput.value.trim(), customDailyPrompt.value, customReviewPrompt.value]
+    );
+    apiKey.value = apiKeyInput.value.trim();
+    apiProvider.value = apiProviderInput.value;
+    apiBaseUrl.value = apiBaseUrlInput.value.trim();
+    apiModel.value = apiModelInput.value.trim();
+    
+    archiveToastMessage.value = 'API 设置已保存';
+    archiveToastVisible.value = true;
+    setTimeout(() => { archiveToastVisible.value = false; }, 2000);
+  } catch (e) {
+    console.error('saveApiSettings failed:', e);
+  } finally {
+    isApiSettingsOpen.value = false;
+  }
+}
+
+async function saveDailyPrompt() {
+  if (!db) return;
+  try {
+    customDailyPrompt.value = customDailyPromptInput.value;
+    await db.execute(
+      `INSERT OR REPLACE INTO settings (id, api_key, api_provider, api_base_url, api_model, custom_daily_prompt, custom_review_prompt) VALUES (1, ?, ?, ?, ?, ?, ?)`,
+      [apiKey.value, apiProvider.value, apiBaseUrl.value, apiModel.value, customDailyPrompt.value, customReviewPrompt.value]
+    );
+    archiveToastMessage.value = '日志提示词已保存';
+    archiveToastVisible.value = true;
+    setTimeout(() => { archiveToastVisible.value = false; }, 2000);
+  } catch (e) {
+    console.error('saveDailyPrompt failed:', e);
+  } finally {
+    isDailyPromptOpen.value = false;
+  }
+}
+
+async function saveReviewPrompt() {
+  if (!db) return;
+  try {
+    customReviewPrompt.value = customReviewPromptInput.value;
+    await db.execute(
+      `INSERT OR REPLACE INTO settings (id, api_key, api_provider, api_base_url, api_model, custom_daily_prompt, custom_review_prompt) VALUES (1, ?, ?, ?, ?, ?, ?)`,
+      [apiKey.value, apiProvider.value, apiBaseUrl.value, apiModel.value, customDailyPrompt.value, customReviewPrompt.value]
+    );
+    archiveToastMessage.value = '归档提示词已保存';
+    archiveToastVisible.value = true;
+    setTimeout(() => { archiveToastVisible.value = false; }, 2000);
+  } catch (e) {
+    console.error('saveReviewPrompt failed:', e);
+  } finally {
+    isReviewPromptOpen.value = false;
+  }
 }
 
 async function seedDemoData() {
@@ -2028,26 +2327,35 @@ async function generateSummary() {
     ? `今天是 ${todayStr}。以下是今日已完成的任务列表：\n${taskList}\n\n以下任务今日仍未完成且已被多次拖延：\n${delayedTaskList}\n如果发现有任务被反复拖延，请用一句话幽默地提醒我，或者建议我是否应该拆解这个任务。`
     : `今天是 ${todayStr}。以下是今日已完成的任务列表：\n${taskList}`;
 
+  const defaultDailyPrompt = `You are a meticulous product assistant. Based on the completed tasks provided, generate a concise daily work report in Markdown. Requirements:
+1) Only summarize actual tasks, do not fabricate results;
+2) Highlight work related to AI / LLMs / prompts / automation;
+3) Do not force AI descriptions where none exist;
+4) Professional, plain tone;
+5) Use third person;
+6) Use Markdown headings + bullet points, each bullet under 20 characters;
+7) If delayed tasks are provided, add a humorous one-liner reminder at the end.`;
+
+  const dailySystemPrompt = customDailyPrompt.value.trim()
+    ? customDailyPrompt.value.trim()
+        .replace(/\{date\}/g, todayStr)
+        .replace(/\{completedCount\}/g, String(completed.length))
+        .replace(/\{todosText\}/g, taskList)
+    : defaultDailyPrompt;
+
   try {
-    const response = await tauriFetch('https://api.deepseek.com/chat/completions', {
+    const response = await tauriFetch(`${apiBaseUrl.value}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey.value}`
       },
       body: JSON.stringify({
-        model: 'deepseek-chat',
+        model: apiModel.value,
         messages: [
           {
             role: 'system',
-            content: `你是一名严谨的产品助理，请根据给出的已完成任务，生成一份简短、结构简单的「产品经理工作日报」Markdown 文本，要求：
-1）只围绕任务本身进行总结，不要虚构额外成果；
-2）重点描述「与 AI / 大模型 / 提示词 / 自动化」相关的工作内容，体现在实际工作中学习和使用 AI；
-3）如果某条任务里没有任何与 AI 相关的内容，就不要强行编造 AI 的描述；
-4）整体语气专业、朴素，不要使用华丽辞藻；
-5）不要使用第一人称“我”，用第三人称或中性描述；
-6）可以用 Markdown 小标题 + 列表的形式组织，但每条列表内容尽量精炼，控制在 20 个字以内；
-7）若用户提供了「被多次拖延的任务」列表，请在总结末尾用一句话幽默地提醒用户，或建议是否应该拆解该任务。`
+            content: dailySystemPrompt
           },
           {
             role: 'user',
@@ -2153,23 +2461,27 @@ async function generateReviewReport() {
       '输出为一份结构清晰、简洁的 Markdown 周报 / 月报，不要虚构未出现的内容。'
     ].join('\n');
 
-    const response = await tauriFetch('https://api.deepseek.com/chat/completions', {
+    const defaultReviewPrompt = `You are a meticulous product assistant. Based on the tasks and Markdown journals provided, generate a periodic work report. Requirements:
+1) Summarize three representative milestones from actual task progress;
+2) Each milestone should state the background, key actions, and visible output;
+3) Provide 3-5 actionable next-phase suggestions with priority awareness;
+4) Use Markdown structure: Overview, Three Milestones, Next Phase Plan;
+5) Professional tone, no exaggeration.`;
+
+    const reviewSystemPrompt = customReviewPrompt.value.trim() || defaultReviewPrompt;
+
+    const response = await tauriFetch(`${apiBaseUrl.value}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey.value}`
       },
       body: JSON.stringify({
-        model: 'deepseek-chat',
+        model: apiModel.value,
         messages: [
           {
             role: 'system',
-            content: `你是一名严谨的产品助理，请基于给出的任务与 Markdown 日记，生成一份阶段性工作周报 / 月报，要求：
-1）围绕真实任务进展与日记内容，总结出三个有代表性的里程碑事件；
-2）每个里程碑需要点明背景、关键动作和可见产出，避免空泛描述；
-3）综合当前阶段的节奏，给出 3-5 条下一阶段的具体行动建议，建议要可执行且有优先级意识；
-4）整体使用 Markdown 结构组织，包含：阶段概览、三大里程碑、下阶段计划 三个部分；
-5）语气专业、克制，不使用夸张或无依据的表述。`
+            content: reviewSystemPrompt
           },
           {
             role: 'user',
